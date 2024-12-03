@@ -2,29 +2,37 @@ import telebot
 from telebot import types
 import time
 import datetime
+import os
 
-API_TOKEN = '8084717420:AAEiFPyCnOzJpQqWyUxlv9E9vv0xxytYNZI'
+API_TOKEN = '8084717420:AAEiFPyCnOzJpQqWyUxlv9E9vv0xxytYNZI'  # Your bot API token
 bot = telebot.TeleBot(API_TOKEN)
 
 # Set your logger group chat_id here
-LOGGER_GROUP_CHAT_ID = '7877197608'
+LOGGER_GROUP_CHAT_ID = '-1002100433415'  # Replace with actual logger group chat ID
+
+# Define the owner's user ID (replace with the actual owner ID)
+OWNER_ID = 7877197608  # Replace with the actual owner user ID
 
 # Store user bio warnings and interactions
 user_bio_warnings = {}
-interaction_logs = []
-
-# Bot owner ID (replace with the actual owner ID)
-OWNER_ID = 7877197608  # Replace with your actual Telegram ID
+interaction_logs = {}
+group_sync_timers = {}
 
 # Function to log messages to the logger group
 def log_to_logger_group(log_message):
     bot.send_message(LOGGER_GROUP_CHAT_ID, log_message)
 
+# Function to handle bot start and log the hosting info
+def log_bot_start():
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_message = f"Bot has started at {current_time}. Hosting details: VPS/Server detected."
+    log_to_logger_group(log_message)
+
 # Function to handle /start command and log user interactions in DM
 @bot.message_handler(commands=['start'])
 def handle_start_command(message):
     # Log user start interaction in DM (name, username, user_id)
-    log_message = f"User @{message.from_user.username} ({message.from_user.first_name} {message.from_user.last_name}) with ID {message.from_user.id} started the bot in DM."
+    log_message = f"User @{message.from_user.username} with ID {message.from_user.id} started the bot."
     log_to_logger_group(log_message)
 
     # Attractive welcome message with buttons
@@ -41,8 +49,8 @@ def handle_start_command(message):
 
     🌟 Here's what I can do for you:
     - [Bᴏᴛ ᴋᴏ ᴀᴘɴᴇ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋʀᴏ ᴏʀ ᴀᴘɴᴇ ɢʀᴏᴜᴘ ᴋᴏ sᴇᴄᴜʀᴇᴅ ᴋʀ ʟᴏ]
-    - [Yᴇ ʙᴏᴛ ᴀᴘᴋᴇ ɢʀᴏᴜᴘ ᴍᴇ Jɪᴛɴᴇ ʙʜɪ ᴜsᴇʀ ᴋɪ ʙɪᴏ ᴍᴇ ʟɪɴᴋ ʜᴀɪ ᴜɴᴋᴏ ᴡᴀʀɴ ᴋʀᴇɢᴀ]
-    - [Yᴇ ʙᴏᴛ ʙɪʟᴋᴜʟ sᴀғᴇ ʜᴀɪ ʏᴇ ʙᴏᴛ TEAM SANKI ɴᴇ ʙɴᴀʏᴀ ʜᴀɪ]
+    - [Yᴇ ʙᴏᴛ ᴀᴘᴋᴇ ɢʀᴏᴜᴘ ᴍᴇ Jɪᴛɴᴇ ʙʜᴀɪ ᴜsᴇʀ ᴋɪ ʙɪᴏ ᴍᴇ ʟɪɴᴋ ʜᴀɪ ᴜɴᴋᴏ ᴡᴀʀɴ ᴋʀᴇɢᴀ]
+    - [Yᴇ ʙᴏᴛ ʙɪʟᴋᴜʟ sᴀғᴇ ʜᴀɪ ʏᴇ ʙᴏᴛ TEAM SANKI ɴᴇ ʙᴀʏᴀ ʜᴀɪ]
 
     Tap on the buttons below to get started:
 
@@ -57,75 +65,47 @@ def handle_start_command(message):
         reply_markup=markup
     )
 
-    # Check if bot has ban permissions in the group
-    if not has_ban_permission(message.chat.id):
-        bot.send_message(message.chat.id, f"@{message.from_user.username}, I do not have ban permissions. Please ask the group owner to grant me these permissions so I can warn users who add links in their bio.")
-
-# Function to check if bot has ban permissions
-def has_ban_permission(chat_id):
-    try:
-        chat_member = bot.get_chat_member(chat_id, bot.get_me().id)
-        return chat_member.status in ['administrator', 'creator'] and chat_member.can_restrict_members
-    except Exception as e:
-        print(f"Error checking permissions: {e}")
-        return False
-
 # Function to log when a bot is added to a group
 @bot.message_handler(content_types=['new_chat_members'])
 def log_new_group(message):
     if message.new_chat_members:
         for new_member in message.new_chat_members:
             if new_member.id == bot.get_me().id:  # If it's the bot being added
-                log_message = f"User @{message.from_user.username} ({message.from_user.first_name}) added the bot to the group {message.chat.title}."
+                log_message = f"User @{message.from_user.username} added the bot to the group {message.chat.title}."
                 log_to_logger_group(log_message)
 
-                # Notify the group owner about the permissions
-                bot.send_message(message.chat.id, f"@{message.from_user.username}, please ensure I have ban permissions to warn users who add links to their bio.")
+                # Check bios of all users in the group for links
+                check_and_warn_users(message.chat.id)
 
-# Function to check if a user in a group has a link in their bio while chatting
-@bot.message_handler(func=lambda message: 'http' in message.text)
-def check_link_in_message(message):
-    user_id = message.from_user.id
-    bio = get_bio(user_id)  # Assume a function that gets user bio
-    if 'http' in bio:
-        bot.send_message(message.chat.id, f"@{message.from_user.username}, please remove the link from your bio within 2 hours.")
-        user_bio_warnings[user_id] = time.time()  # Start the 2-hour timer
-        start_timer(user_id, message.chat.id)
+# Function to check bios of users and warn them
+def check_and_warn_users(chat_id):
+    members = bot.get_chat_members(chat_id)  # Get all group members
+    for member in members:
+        bio = get_bio(member.user.id)  # Assume a function that fetches user bio
+        if 'http' in bio:  # If bio contains a link
+            bot.send_message(chat_id, f"@{member.user.username}, please remove the link from your bio within 2 hours. If not, you might be banned.")
+            user_bio_warnings[member.user.id] = time.time()  # Track when the warning was sent
+            start_timer(member.user.id, chat_id)
 
-# Timer to kick users who don't remove links within 2 hours
+# Function to start a timer for each user's bio warning
 def start_timer(user_id, chat_id):
-    time.sleep(7200)  # Wait for 2 hours
+    # Wait for 2 hours (7200 seconds) to recheck the user's bio
+    time.sleep(7200)  # 2 hours
+    # After 2 hours, recheck the bio
     if user_id in user_bio_warnings and time.time() - user_bio_warnings[user_id] > 7200:
-        bot.kick_chat_member(chat_id, user_id)
-        bot.send_message(chat_id, f"@{user_id} was kicked for not removing the link from their bio.")
+        bio = get_bio(user_id)
+        if 'http' in bio:
+            bot.kick_chat_member(chat_id, user_id)
+            bot.send_message(chat_id, f"@{user_id} was kicked for not removing the link from their bio.")
 
 # Function to get user's bio (this can be improved as per your setup)
 def get_bio(user_id):
     # This should ideally fetch the bio via Telegram API, but due to limitations, 
-    # this part will be simplified
-    return 'http://example.com'
+    # this part will be simplified.
+    # You should replace it with actual logic that fetches user bios
+    return 'http://example.com'  # This should return actual bio content
 
-# Handle ban command
-@bot.message_handler(commands=['ban'])
-def ban_user(message):
-    if message.chat.type != 'private':
-        # Only admins or creators can use the /ban command
-        if message.from_user.id not in [admin.user.id for admin in bot.get_chat_administrators(message.chat.id)]:
-            bot.send_message(message.chat.id, "You need to be an admin to use this command.")
-            return
-        
-        # Extract user to ban
-        try:
-            banned_user = message.reply_to_message.from_user
-            if banned_user.id == OWNER_ID:
-                bot.send_message(message.chat.id, "Hᴇᴇ ʙʜᴀɪ ᴋʏᴀ ᴅɪᴋᴋᴀᴛ ʜᴀɪ ᴛᴜᴍʜᴇ ᴛᴜᴍ ᴍᴇʀᴇ ᴏᴡɴᴇʀ ᴋᴏ ʙᴀɴ ᴋʀɴᴇ ᴘʀ Kᴀʜᴇ ᴛᴜʟᴇ ʜᴏ😏")
-            else:
-                bot.kick_chat_member(message.chat.id, banned_user.id)
-                bot.send_message(message.chat.id, f"@{banned_user.username} has been banned.")
-        except AttributeError:
-            bot.send_message(message.chat.id, "Please reply to a user's message to ban them.")
-        
 # Polling loop to keep the bot running
-print("Bot has started!")  # Message when the bot starts
-
-bot.polling(non_stop=True)
+if __name__ == "__main__":
+    log_bot_start()  # Log when the bot starts
+    bot.polling(non_stop=True)
