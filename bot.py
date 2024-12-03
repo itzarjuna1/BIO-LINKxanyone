@@ -27,8 +27,8 @@ def handle_start_command(message):
     # Attractive welcome message with buttons
     photo_url = 'https://graph.org/file/6c0db28a848ed4dacae56-93b1bc1873b2494eb2.jpg'  # Replace with actual image URL
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("Owner", url="https://your_owner_channel.com"))
-    markup.add(types.InlineKeyboardButton("Support", url="https://t.me/TSGCODER"))
+    markup.add(types.InlineKeyboardButton("Owner", url="https://t.me/TSGCODER"))
+    markup.add(types.InlineKeyboardButton("Support", url="https://t.me/matalbi_duniya"))
     markup.add(types.InlineKeyboardButton("Start Exploring", callback_data="explore"))
 
     welcome_message = """
