@@ -13,6 +13,9 @@ LOGGER_GROUP_CHAT_ID = '7877197608'
 user_bio_warnings = {}
 interaction_logs = []
 
+# Bot owner ID (replace with the actual owner ID)
+OWNER_ID = 7877197608  # Replace with your actual Telegram ID
+
 # Function to log messages to the logger group
 def log_to_logger_group(log_message):
     bot.send_message(LOGGER_GROUP_CHAT_ID, log_message)
@@ -79,16 +82,15 @@ def log_new_group(message):
                 # Notify the group owner about the permissions
                 bot.send_message(message.chat.id, f"@{message.from_user.username}, please ensure I have ban permissions to warn users who add links to their bio.")
 
-# Function to check if a user in a group has a link in their bio
-@bot.message_handler(content_types=['new_chat_members'])
-def check_new_member(message):
-    if message.new_chat_members:
-        for new_member in message.new_chat_members:
-            bio = get_bio(new_member.id)  # Assume a function that gets user bio
-            if 'http' in bio:
-                bot.send_message(message.chat.id, f"@{new_member.username}, please remove the link from your bio within 2 hours.")
-                user_bio_warnings[new_member.id] = time.time()  # Start the 2-hour timer
-                start_timer(new_member.id, message.chat.id)
+# Function to check if a user in a group has a link in their bio while chatting
+@bot.message_handler(func=lambda message: 'http' in message.text)
+def check_link_in_message(message):
+    user_id = message.from_user.id
+    bio = get_bio(user_id)  # Assume a function that gets user bio
+    if 'http' in bio:
+        bot.send_message(message.chat.id, f"@{message.from_user.username}, please remove the link from your bio within 2 hours.")
+        user_bio_warnings[user_id] = time.time()  # Start the 2-hour timer
+        start_timer(user_id, message.chat.id)
 
 # Timer to kick users who don't remove links within 2 hours
 def start_timer(user_id, chat_id):
@@ -103,8 +105,27 @@ def get_bio(user_id):
     # this part will be simplified
     return 'http://example.com'
 
-# Print a message to VPS terminal when bot starts
-print("Bot has started!")
-
+# Handle ban command
+@bot.message_handler(commands=['ban'])
+def ban_user(message):
+    if message.chat.type != 'private':
+        # Only admins or creators can use the /ban command
+        if message.from_user.id not in [admin.user.id for admin in bot.get_chat_administrators(message.chat.id)]:
+            bot.send_message(message.chat.id, "You need to be an admin to use this command.")
+            return
+        
+        # Extract user to ban
+        try:
+            banned_user = message.reply_to_message.from_user
+            if banned_user.id == OWNER_ID:
+                bot.send_message(message.chat.id, "Hᴇᴇ ʙʜᴀɪ ᴋʏᴀ ᴅɪᴋᴋᴀᴛ ʜᴀɪ ᴛᴜᴍʜᴇ ᴛᴜᴍ ᴍᴇʀᴇ ᴏᴡɴᴇʀ ᴋᴏ ʙᴀɴ ᴋʀɴᴇ ᴘʀ Kᴀʜᴇ ᴛᴜʟᴇ ʜᴏ😏")
+            else:
+                bot.kick_chat_member(message.chat.id, banned_user.id)
+                bot.send_message(message.chat.id, f"@{banned_user.username} has been banned.")
+        except AttributeError:
+            bot.send_message(message.chat.id, "Please reply to a user's message to ban them.")
+        
 # Polling loop to keep the bot running
+print("Bot has started!")  # Message when the bot starts
+
 bot.polling(non_stop=True)
