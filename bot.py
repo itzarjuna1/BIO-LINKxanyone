@@ -2,13 +2,12 @@ import telebot
 from telebot import types
 import time
 import datetime
-import os
 
 API_TOKEN = '8084717420:AAEiFPyCnOzJpQqWyUxlv9E9vv0xxytYNZI'  # Your bot API token
 bot = telebot.TeleBot(API_TOKEN)
 
 # Set your logger group chat_id here
-LOGGER_GROUP_CHAT_ID = '-1002100433415'  # Replace with actual logger group chat ID
+LOGGER_GROUP_CHAT_ID = '-1002148651992'  # Replace with actual logger group chat ID
 
 # Define the owner's user ID (replace with the actual owner ID)
 OWNER_ID = 7877197608  # Replace with the actual owner user ID
@@ -79,13 +78,17 @@ def log_new_group(message):
 
 # Function to check bios of users and warn them
 def check_and_warn_users(chat_id):
-    members = bot.get_chat_members(chat_id)  # Get all group members
-    for member in members:
-        bio = get_bio(member.user.id)  # Assume a function that fetches user bio
-        if 'http' in bio:  # If bio contains a link
-            bot.send_message(chat_id, f"@{member.user.username}, please remove the link from your bio within 2 hours. If not, you might be banned.")
-            user_bio_warnings[member.user.id] = time.time()  # Track when the warning was sent
-            start_timer(member.user.id, chat_id)
+    try:
+        members = bot.get_chat_administrators(chat_id)  # Get admins as an example
+        for member in members:
+            user_id = member.user.id
+            bio = get_bio(user_id)  # Assume a function that fetches user bio
+            if 'http' in bio:  # If bio contains a link
+                bot.send_message(chat_id, f"@{member.user.username}, please remove the link from your bio within 2 hours. If not, you might be banned.")
+                user_bio_warnings[member.user.id] = time.time()  # Track when the warning was sent
+                start_timer(member.user.id, chat_id)
+    except Exception as e:
+        print(f"Error checking users: {e}")
 
 # Function to start a timer for each user's bio warning
 def start_timer(user_id, chat_id):
@@ -97,13 +100,6 @@ def start_timer(user_id, chat_id):
         if 'http' in bio:
             bot.kick_chat_member(chat_id, user_id)
             bot.send_message(chat_id, f"@{user_id} was kicked for not removing the link from their bio.")
-
-# Function to get user's bio (this can be improved as per your setup)
-def get_bio(user_id):
-    # This should ideally fetch the bio via Telegram API, but due to limitations, 
-    # this part will be simplified.
-    # You should replace it with actual logic that fetches user bios
-    return 'http://example.com'  # This should return actual bio content
 
 # Polling loop to keep the bot running
 if __name__ == "__main__":
