@@ -31,7 +31,7 @@ def log_bot_start():
 @bot.message_handler(commands=['start'])
 def handle_start_command(message):
     # Log user start interaction in DM (name, username, user_id)
-    log_message = f"User @{message.from_user.username} with ID {message.from_user.id} started the bot."
+    log_message = f"User @{message.from_user.username}  \n\nID {message.from_user.id} started the bot."
     log_to_logger_group(log_message)
 
     # Attractive welcome message with buttons
@@ -42,7 +42,7 @@ def handle_start_command(message):
     markup.add(types.InlineKeyboardButton("Start Exploring", callback_data="explore"))
 
     welcome_message = """
-    **Welcome to [Your Bot Name] 🤖!**
+    **Welcome to 𝐋𝐈𝐍𝐊 𝐔𝐒𝐄𝐑 𝐖𝐀𝐑𝐍 🤖!**
 
     Hi, I'm your personal assistant here to help you with [brief description of bot's purpose]. Whether you're looking for [features of the bot], I’ve got you covered!
 
@@ -70,7 +70,7 @@ def log_new_group(message):
     if message.new_chat_members:
         for new_member in message.new_chat_members:
             if new_member.id == bot.get_me().id:  # If it's the bot being added
-                log_message = f"User @{message.from_user.username} added the bot to the group {message.chat.title}."
+                log_message = f"User @{message.from_user.username} \n\nadded the bot to the group \n\n{message.chat.title}."
                 log_to_logger_group(log_message)
 
                 # Check bios of all users in the group for links
