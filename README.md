@@ -1,6 +1,6 @@
-# [Your Bot Name] - Telegram Bot
+# [𝐔𝐒𝐄𝐑 𝐖𝐀𝐑𝐍] - Telegram Bot
 
-**[Your Bot Name]** is a Telegram bot designed to manage group chats by monitoring user bios for links. It sends warnings to users who have links in their bio and removes them if they don’t comply within 2 hours. The bot also logs interactions, tracks when it’s added to groups, and provides quick access to the owner and support channels.
+**[𝐔𝐒𝐄𝐑 𝐖𝐀𝐑𝐍]** is a Telegram bot designed to manage group chats by monitoring user bios for links. It sends warnings to users who have links in their bio and removes them if they don’t comply within 2 hours. The bot also logs interactions, tracks when it’s added to groups, and provides quick access to the owner and support channels.
 
 ---
 
