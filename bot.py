@@ -3,11 +3,11 @@ from telebot import types
 import time
 import datetime
 
-API_TOKEN = 'YOUR_BOT_API_TOKEN'
+API_TOKEN = '8084717420:AAEiFPyCnOzJpQqWyUxlv9E9vv0xxytYNZI'
 bot = telebot.TeleBot(API_TOKEN)
 
 # Set your logger group chat_id here
-LOGGER_GROUP_CHAT_ID = 'YOUR_LOGGER_GROUP_CHAT_ID'
+LOGGER_GROUP_CHAT_ID = '7877197608'
 
 # Store user bio warnings and interactions
 user_bio_warnings = {}
@@ -25,10 +25,10 @@ def handle_start_command(message):
     log_to_logger_group(log_message)
 
     # Attractive welcome message with buttons
-    photo_url = 'https://example.com/photo.jpg'  # Replace with actual image URL
+    photo_url = 'https://graph.org/file/6c0db28a848ed4dacae56-93b1bc1873b2494eb2.jpg'  # Replace with actual image URL
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("Owner", url="https://your_owner_channel.com"))
-    markup.add(types.InlineKeyboardButton("Support", url="https://your_support_channel.com"))
+    markup.add(types.InlineKeyboardButton("Support", url="https://t.me/TSGCODER"))
     markup.add(types.InlineKeyboardButton("Start Exploring", callback_data="explore"))
 
     welcome_message = """
@@ -37,9 +37,9 @@ def handle_start_command(message):
     Hi, I'm your personal assistant here to help you with [brief description of bot's purpose]. Whether you're looking for [features of the bot], I’ve got you covered!
 
     🌟 Here's what I can do for you:
-    - [Feature 1]
-    - [Feature 2]
-    - [Feature 3]
+    - [Bᴏᴛ ᴋᴏ ᴀᴘɴᴇ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋʀᴏ ᴏʀ ᴀᴘɴᴇ ɢʀᴏᴜᴘ ᴋᴏ sᴇᴄᴜʀᴇᴅ ᴋʀ ʟᴏ]
+    - [Yᴇ ʙᴏᴛ ᴀᴘᴋᴇ ɢʀᴏᴜᴘ ᴍᴇ Jɪᴛɴᴇ ʙʜɪ ᴜsᴇʀ ᴋɪ ʙɪᴏ ᴍᴇ ʟɪɴᴋ ʜᴀɪ ᴜɴᴋᴏ ᴡᴀʀɴ ᴋʀᴇɢᴀ]
+    - [Yᴇ ʙᴏᴛ ʙɪʟᴋᴜʟ sᴀғᴇ ʜᴀɪ ʏᴇ ʙᴏᴛ TEAM SANKI ɴᴇ ʙɴᴀʏᴀ ʜᴀɪ]
 
     Tap on the buttons below to get started:
 
