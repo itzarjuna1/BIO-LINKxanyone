@@ -99,8 +99,12 @@ def start_timer(user_id, chat_id):
 
 # Function to get user's bio (this can be improved as per your setup)
 def get_bio(user_id):
-    # This should ideally fetch the bio via Telegram API, but due to limitations, this part will be simplified
+    # This should ideally fetch the bio via Telegram API, but due to limitations, 
+    # this part will be simplified
     return 'http://example.com'
+
+# Print a message to VPS terminal when bot starts
+print("Bot has started!")
 
 # Polling loop to keep the bot running
 bot.polling(non_stop=True)
