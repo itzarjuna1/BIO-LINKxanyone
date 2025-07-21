@@ -3,14 +3,14 @@ from telebot import types
 import time
 import datetime
 
-API_TOKEN = '8084717420:7113971264:AAG0sB7DR-S-S13qNrm6IaCfzx9J9XpjC7s'
+API_TOKEN = "7560520380:AAFdLmt8J3jlrQJLJuZ-wqMhV0AvpKIUIPk"
 bot = telebot.TeleBot(API_TOKEN)
 
 # Set your logger group chat_id here
-LOGGER_GROUP_CHAT_ID = '-1002046320443'
+LOGGER_GROUP_CHAT_ID = '-1002733628393'
 
 # Set the bot owner's user ID (replace with your actual user ID)
-OWNER_USER_ID = '7520092354'
+OWNER_USER_ID = '7926944005'
 
 # Store user bio warnings and interactions
 user_bio_warnings = {}
@@ -28,10 +28,10 @@ def handle_start_command(message):
     log_to_logger_group(log_message)
 
     # Attractive welcome message with buttons
-    photo_url = 'https://graph.org/file/6c0db28a848ed4dacae56-93b1bc1873b2494eb2.jpg'  # Replace with actual image URL
+    photo_url = 'https://files.catbox.moe/mavhwt.jpg'  # Replace with actual image URL
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("Owner", url="https://t.me/TSGCODER"))
-    markup.add(types.InlineKeyboardButton("Support", url="https://t.me/matalbi_duniya"))
+    markup.add(types.InlineKeyboardButton("Owner", url="https://t.me/ll_KUZE_ll"))
+    markup.add(types.InlineKeyboardButton("Support", url="https://t.me/+3CTsVQWepswwY2Vk"))
     markup.add(types.InlineKeyboardButton("Start Exploring", callback_data="explore"))
 
     welcome_message = """
