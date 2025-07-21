@@ -41,7 +41,7 @@ def handle_start_command(message):
 
     🍁 Here's what I can do for you:🍁
     🍁- [Add me to your group for bio link warning detection]
-    🍁- [This bot is completely safe, created by TEAM SANKI]
+    🍁- [This bot is completely safe, created by ɢx ᴅᴀʀᴋ ʙᴏᴛs [🇮🇳]]
 
     🍁Tap on the buttons below to get started:🍁
 
