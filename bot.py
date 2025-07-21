@@ -35,17 +35,17 @@ def handle_start_command(message):
     markup.add(types.InlineKeyboardButton("Start Exploring", callback_data="explore"))
 
     welcome_message = """
-    <blockquote>**Welcome to Lɪɴᴋ Usᴇʀ Wᴀʀɴ 🤖!**</blockquote>
+    **Welcome to Lɪɴᴋ Usᴇʀ Wᴀʀɴ 🤖!**
 
-    <blockquote>Hi, I'm your personal assistant here to help you with [brief description of bot's purpose]. Whether you're looking for [features of the bot], I’ve got you covered!</blockquote>
+   🍁Hi, 🍁I'm your personal assistant here to help you with [brief description of bot's purpose]. Whether you're looking for [features of the bot], I’ve got you covered!
 
-    <blockquote>🌟 Here's what I can do for you:
-    - [Add me to your group for bio link warning detection]
-    - [This bot is completely safe, created by TEAM SANKI]</blockquote>
+    🍁 Here's what I can do for you:🍁
+    🍁- [Add me to your group for bio link warning detection]
+    🍁- [This bot is completely safe, created by TEAM SANKI]
 
-    <blockquote>Tap on the buttons below to get started:</blockquote>
+    🍁Tap on the buttons below to get started:🍁
 
-    <blockquote>🚀 **Let's make your experience awesome!**</blockquote>
+    🍁 **Let's make your experience awesome!**
     """
 
     bot.send_photo(
