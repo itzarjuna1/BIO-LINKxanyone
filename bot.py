@@ -59,7 +59,7 @@ def handle_start_command(message):
 # Function to check if a user in a group has a link in their bio
 def check_and_warn_users(chat_id):
     try:
-        members = bot.get_chat_members(chat_id)  # Retrieve all members of the group
+        bot.get_chat_member(chat_id, user_id)
         for member in members:
             # Retrieve user bio one by one using get_chat_member
             member_info = bot.get_chat_member(chat_id, member.user.id)
